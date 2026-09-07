@@ -21,6 +21,44 @@ def main():
 
     args = parser.parse_args()
 
+    entries = parse_file(args.logfile)
+
+    # Filter by IP
+    if args.ip:
+        entries = [entry for entry in entries if entry["ip"] == args.ip]
+
+    # Show suspicious requests
+    if args.suspicious:
+
+        entries = [entry for entry in entries if entry["suspicious"]]
+
+        for entry in entries:
+            print(
+                f"{entry['ip']} "
+                f"{entry['method']} "
+                f"{entry['path']} "
+                f"{entry['status']} "
+                f"{entry['reasons']} "
+            )
+
+        return
+
+    # Normal summary
+
+    summary = generate_summary(entries)
+
+    for ip, data in summary.items():
+
+        print(f"\nIP: {ip}")
+        print(f"Total requests: {data['total_requests']}")
+
+        print("Status codes:")
+
+        for status, count in sorted(data["status_codes"].items()):
+            print(f" {status}: {count}")
+
+        print(f"Suspicious requests: " f"{data['suspicious_requests']}")
+
 
 if __name__ == "__main__":
     main()
