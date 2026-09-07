@@ -95,3 +95,36 @@ def count_status_codes_by_ip(entries):
         result[ip][status] += 1
 
     return dict(result)
+
+
+def generate_summary(entries):
+    """
+    Generate a security summary for each IP.
+    """
+
+    summary = defaultdict(
+        lambda: {
+            "total_requests": 0,
+            "status_codes": Counter(),
+            "suspicious_requests": 0,
+            "suspicious_reasons": Counter(),
+        }
+    )
+
+    for entry in entries:
+        ip = entry["ip"]
+
+        # Total requests
+        summary[ip]["total_requests"] += 1
+
+        # Status code
+        summary[ip]["status_codes"][entry["status"]] += 1
+
+        # Suspicious requests
+        if entry["suspicious"]:
+            summary[ip]["suspicious_requests"] += 1
+
+            for reason in entry["reasons"]:
+                summary[ip]["suspicious_reasons"][reason] += 1
+
+    return dict(summary)
