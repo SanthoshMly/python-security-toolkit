@@ -13,3 +13,22 @@ SUSPICIOUS_PATTERNS = {
         r"(wp-admin|phpmyadmin|cgi-bin|\.git|/admin)", re.IGNORECASE
     ),
 }
+
+
+def detect_suspicious(entry):
+    """
+    checks parsed log entries for suspicious patterns
+    """
+
+    findings = []
+
+    path = entry.get("path", "")
+
+    for name, pattern in SUSPICIOUS_PATTERNS.items():
+        if pattern.search(path):
+            findings.append(name)
+
+    if entry.get("status") in (401, 403):
+        findings.append("Unauthorized/forbidden request")
+
+    return findings
