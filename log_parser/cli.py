@@ -16,6 +16,9 @@ def main():
         "--suspicious", action="store_true", help="Show only suspicious requests"
     )
 
+    # optional argument to show requests from a specific IP
+    parser.add_argument("--ip", help="Show requests from a specific IP")
+
 
 if __name__ == "__main__":
     main()
