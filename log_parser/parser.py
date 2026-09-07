@@ -13,3 +13,28 @@ LOG_PATTERN = re.compile(
     r'(?:\s+"(?P<referer>[^"]*)")?'
     r'(?:\s+"(?P<user_agent>[^"]-)")?'
 )
+
+def parse_line(line):
+
+def parse_file(filename):
+
+    """
+    Parse an entire log file.
+    Returns a list of logged entries
+    """
+
+    entries = []
+
+    with open(filename, "r", encoding="utf-8", errors="ignore") as file:
+        for line in file:
+            line - line.strip()
+
+            if not line:
+                continue
+
+            entry = parse_line(line)
+
+            if entry:
+                entries.append(entry)
+
+        return entries
