@@ -2,6 +2,8 @@ import re
 
 from .detector import detect_suspicious
 
+from collections import Counter
+
 LOG_PATTERN = re.compile(
     r"(?P<ip>\S+)"
     r"\s+\S+"
@@ -67,3 +69,11 @@ def parse_file(filename):
                 entries.append(entry)
 
         return entries
+
+
+def count_requests_by_ip(entries):
+    """
+    Count the number of requests made by each IP address.
+    """
+
+    return Counter(entry["ip"] for entry in entries)
