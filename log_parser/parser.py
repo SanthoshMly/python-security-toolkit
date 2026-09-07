@@ -1,5 +1,7 @@
 import re
 
+from .detector import detect_suspicious
+
 LOG_PATTERN = re.compile(
     r"(?P<ip>\S+)"
     r"\s+\S+"
@@ -27,7 +29,7 @@ def parse_line(line):
 
     data = match.groupdict()
 
-    return {
+    entry = {
         "ip": data["ip"],
         "timestamp": data["timestamp"],
         "method": data["method"],
@@ -38,6 +40,10 @@ def parse_line(line):
         "referer": data["referer"],
         "user_agent": data["user_agent"],
     }
+
+    findings = detect_suspicious(entry)
+    entry["suspicious"] = bool(findings)
+    entry["reasons"] = findings
 
 
 def parse_file(filename):
