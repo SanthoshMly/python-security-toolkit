@@ -2,7 +2,7 @@ import re
 
 from .detector import detect_suspicious
 
-from collections import Counter
+from collections import Counter, defaultdict
 
 LOG_PATTERN = re.compile(
     r"(?P<ip>\S+)"
@@ -15,7 +15,7 @@ LOG_PATTERN = re.compile(
     r"\s+(?P<status>\d{3})"
     r"\s+(?P<size>\S+)"
     r'(?:\s+"(?P<referer>[^"]*)")?'
-    r'(?:\s+"(?P<user_agent>[^"]-)")?'
+    r'(?:\s+"(?P<user_agent>[^"]*)")?'
 )
 
 
@@ -47,6 +47,8 @@ def parse_line(line):
     entry["suspicious"] = bool(findings)
     entry["reasons"] = findings
 
+    return entry
+
 
 def parse_file(filename):
     """
@@ -77,3 +79,19 @@ def count_requests_by_ip(entries):
     """
 
     return Counter(entry["ip"] for entry in entries)
+
+
+def count_status_codes_by_ip(entries):
+    """
+    Count HTTP status codes for each IP address>
+    """
+
+    result = defaultdict(Counter)
+
+    for entry in entries:
+        ip = entry["ip"]
+        status = entry["status"]
+
+        result[ip][status] += 1
+
+    return dict(result)
